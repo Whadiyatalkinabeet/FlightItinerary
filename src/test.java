@@ -20,8 +20,17 @@ public class test {
         // note directed edges are printed as: (<v1>,<v2>)
         System.out.println(hrefGraph.toString());
 		
+        
         Scanner in = new Scanner(System.in);
         String startVertex, endVertex;
+        
+        System.out.println("The following airports are used:");
+        
+        Iterator<String> airports = hrefGraph.vertexSet().iterator();
+        
+        while (airports.hasNext()){
+        	System.out.println(airports.next());
+        }
         
         System.out.println("Please enter the start airport:");
         startVertex = in.nextLine();
@@ -32,14 +41,15 @@ public class test {
         DijkstraShortestPath<String, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<String, DefaultWeightedEdge>
         (hrefGraph, startVertex, endVertex);
         
+        List<DefaultWeightedEdge> l = shortestPath.getPathEdgeList();
+        Iterator<DefaultWeightedEdge> iterator = l.iterator();
         
         System.out.println("Shortest (i.e cheapest) path:");
-       
-        System.out.println(shortestPath.getPathEdgeList());
-        
-        String output = shortestPath.getPathEdgeList().toString();
-        
-        System.out.println(output);
+        int i = 0;
+        while (iterator.hasNext()){
+        	i += 1;
+        	System.out.println(i + ". " + iterator.next());
+        }
         
         System.out.print("Cost of shortest (i.e cheapest) path = £");
         System.out.print(shortestPath.getPathLength());
