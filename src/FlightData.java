@@ -1,4 +1,18 @@
-
+/**
+ * This class extends the jgrapht DefaultWeightedEdge class
+ * and allows edges to contain, as well as edge weights, the 
+ * following data:<br>
+ * 
+ * 1. Price <br>
+ * 2. Flight Number <br>
+ * 3. Departure Time <br>
+ * 4. Arrival Time <br>
+ * 5. Flight Duration 
+ * 
+ * <img src="/home/cs2/ns53/Desktop/santiago_small.jpg"/>
+ * @author ns53
+ *
+ */
 public class FlightData extends org.jgrapht.graph.DefaultWeightedEdge {
 	
 	
@@ -25,6 +39,8 @@ public class FlightData extends org.jgrapht.graph.DefaultWeightedEdge {
 	public Integer getPrice(){
 		return Price;
 	}
+	
+	
 	
 	public String getNumber(){
 		return Number;

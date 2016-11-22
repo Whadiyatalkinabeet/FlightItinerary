@@ -4,18 +4,63 @@ import org.jgrapht.graph.*;
 
 import java.text.ParseException;
 import java.util.*;
-
+/**
+ * This Class Implements <strong>Parts A-E</strong>
+ *This Class Implements the following parts of <strong>Part F:</strong><br>
+ *
+ *<strong>
+ *1.<br>
+ *2.<br>
+ *4.<br>
+ *</strong>
+ *
+ * @author ns53
+ *
+ */
 public class PartC {
-
+	
+	/**
+	 * This method will set all of the edge weights of a given graph to zero.
+	 * @param graph
+	 */
+	public static void RemoveEdgeWeights(SimpleDirectedWeightedGraph<String, FlightData> graph) {
+		
+		Iterator<FlightData> iterator = graph.edgeSet().iterator();
+		
+		while (iterator.hasNext()){
+			FlightData edge = iterator.next();
+			graph.setEdgeWeight(edge, 0);
+		}
+		
+		
+	}
+	/**
+	 * The main class will call the FlightPaths() method to generate a graph.<br>
+	 * The user will be asked for input here and two itineraries will be generated.<br>
+	 * 
+	 * The itineraries will contain:<br>
+	 * <strong>
+	 * 1. The Cheapest Journey<br>
+	 * 2. The Shortest Journey
+	 * </strong>
+	 * 
+	 * 
+	 * @param args
+	 * @throws ParseException
+	 */
 	public static void main(String[] args) throws ParseException{
-		  // create a graph based on URL objects
+		  
 		SimpleDirectedWeightedGraph<String, FlightData> Graph = FlightPaths();
+		
 		TimeBuilder time = new TimeBuilder();
-        // note directed edges are printed as: (<v1>,<v2>)
+		
+		 Scanner in = new Scanner(System.in);
+		 
+	     String startVertex, endVertex;
+        
         System.out.println(Graph.toString());
         
-        Scanner in = new Scanner(System.in);
-        String startVertex, endVertex;
+       
         
         System.out.println("Please enter the start airport:");
         startVertex = in.nextLine();
@@ -23,12 +68,38 @@ public class PartC {
         System.out.println("Please enter the end airport");
         endVertex = in.nextLine();
         
+        DijkstraShortestPath<String, FlightData> cheapestPath = new DijkstraShortestPath<String, FlightData>
+        (Graph, startVertex, endVertex);
+        
+        System.out.println("_____________________________________________");
+        System.out.println("______________CHEAPEST JOURNEY_______________");
+        GenerateItinerary(cheapestPath, time);
+        System.out.println("_____________________________________________");
+        System.out.println("______________CHEAPEST JOURNEY_______________\n");
+        
+        
+        
+        RemoveEdgeWeights(Graph);
+        
         DijkstraShortestPath<String, FlightData> shortestPath = new DijkstraShortestPath<String, FlightData>
         (Graph, startVertex, endVertex);
         
         
+        System.out.println("_____________________________________________");
+        System.out.println("______________SHORTEST JOURNEY_______________");
+        GenerateItinerary(shortestPath, time);
+        System.out.println("_____________________________________________");
+        System.out.println("______________SHORTEST JOURNEY_______________");
+        
+    
+        
+	}
+        
+        public static void GenerateItinerary (DijkstraShortestPath<String, FlightData> shortestPath, TimeBuilder time) throws ParseException {
         
         Iterator<FlightData> iterator = shortestPath.getPathEdgeList().iterator();
+        Iterator<FlightData> Arrivals = shortestPath.getPathEdgeList().iterator();
+        Iterator<FlightData> Departures = shortestPath.getPathEdgeList().iterator();
         
         
         
@@ -37,6 +108,8 @@ public class PartC {
         int totalPrice = 0;
         int totalTime = 0;
         String ttest = "00:00";
+        
+        
         
         System.out.println("Leg\t" + "From\t" + "To\t\t" +  "Departs\t" +  "Arrives\t" +  "On");
         
@@ -49,17 +122,45 @@ public class PartC {
         	System.out.println(i + ".\t" + r + "\t" + r.getDepart() + "\t" + r.getArrive() + "\t" + r.getNumber());
         	
         }
-        System.out.println("Total Journey Cost = £" + totalPrice + ".");
-        ArrayList<String> split = time.getData(ttest);
-        System.out.println("Total Time in the Air = " + split.get(0) + "h " + split.get(1) + "m.");
-       
+        
+        FlightData Arrive, Depart;
+        String changeover = "00:00";
         
        
+       Depart = Departures.next();
+        
+        while(Departures.hasNext()){
+        	Arrive = Arrivals.next();
+        	
+        	changeover = time.Add(changeover, time.getDuration(Arrive.getArrive(), Departures.next().getDepart()));
+        	
+        }
+        
+        
+        System.out.println("Total Journey Cost = ï¿½" + totalPrice + ".");
+        ArrayList<String> splitTime = time.getData(ttest);
+        ArrayList<String> splitChangeOver = time.getData(changeover);
+        
+    
+        System.out.println("Total Time in the Air = " + splitTime.get(0) + "h " + splitTime.get(1) + "m.");
+        System.out.println("Changeover time = " + splitChangeOver.get(0) + "h " + splitChangeOver.get(1) + "m.");
+        String TotalTime = time.Add(ttest, changeover);
+        
+        ArrayList<String> splitTotalTime = time.getData(TotalTime);
+        System.out.println("Total Journey Time = " + splitTotalTime.get(0) + "h " + splitTotalTime.get(1) + "m. ");
+        
        
         
         
+        //----------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
         
-	}
+     
+        }
+        
+        
+	
 	
 	public static SimpleDirectedWeightedGraph<String, FlightData> FlightPaths() {
 		
@@ -96,114 +197,114 @@ public class PartC {
         // add edges to create linking structure
         
         
-        FlightData EH = new FlightData(80, "BA354", "1830", "0127", 1, "01:27");
+        FlightData EH = new FlightData(80, "BA354", "21:30", "04:00", 1, "06:30");
         g.addEdge(Edinburgh, Heathrow, EH);
         g.setEdgeWeight(EH, EH.getPrice());
         
      
-        FlightData HE = new FlightData(80, "BA354", "1830", "0127", 1, "01:27");
+        FlightData HE = new FlightData(80, "BA354", "21:30", "04:00", 1, "06:30");
         g.addEdge(Heathrow, Edinburgh, HE);
         g.setEdgeWeight(HE, HE.getPrice());
         
         
-        FlightData HD = new FlightData(130, "BA353", "0200", "1010", 8, "08:10");
+        FlightData HD = new FlightData(130, "BA353", "02:00", "10:10", 8, "08:10");
         g.addEdge(Heathrow, Dubai, HD);
         g.setEdgeWeight(HD, HD.getPrice());
         
         
-        FlightData DH = new FlightData(130, "BA353", "0200", "1010", 8, "08:10");
+        FlightData DH = new FlightData(130, "BA353", "02:00", "10:10", 8, "08:10");
         g.addEdge(Dubai, Heathrow, DH);
         g.setEdgeWeight(DH, DH.getPrice());
         
         
-        FlightData HS = new FlightData(570, "BA352", "0100", "1205", 11, "11:05");
+        FlightData HS = new FlightData(570, "BA352", "01:00", "12:05", 11, "11:05");
         g.addEdge(Heathrow, Sydney, HS);
         g.setEdgeWeight(HS, HS.getPrice());
         
        
-        FlightData SH = new FlightData(570, "BA352", "0100", "1205", 11, "11:05");
+        FlightData SH = new FlightData(570, "BA352", "01:00", "12:05", 11, "11:05");
         g.addEdge(Sydney, Heathrow, SH);
         g.setEdgeWeight(SH, SH.getPrice());
         
      
         
-        FlightData DKL = new FlightData(170, "BA351", "1300", "1800", 5, "05:00");
+        FlightData DKL = new FlightData(170, "BA351", "13:00", "18:00", 5, "05:00");
         g.addEdge(Dubai, KualaLumpur, DKL);
         g.setEdgeWeight(DKL, DKL.getPrice());
         
         
-        FlightData KLD = new FlightData(170, "BA351", "1300", "1800", 5, "05:00");
+        FlightData KLD = new FlightData(170, "BA351", "13:00", "18:00", 5, "05:00");
         g.addEdge(KualaLumpur, Dubai, KLD);
         g.setEdgeWeight(KLD, KLD.getPrice());
         
        
         
         
-        FlightData DE = new FlightData(190, "BA350", "1400", "2330", 9, "09:30");
+        FlightData DE = new FlightData(190, "BA350", "14:00", "23:30", 9, "09:30");
         g.addEdge(Dubai, Edinburgh, DE);
         g.setEdgeWeight(DE, DE.getPrice());
        
         
-        FlightData ED = new FlightData(190, "BA350", "1400", "2330", 9, "09:30");
+        FlightData ED = new FlightData(190, "BA350", "14:00", "23:30", 9, "09:30");
         g.addEdge(Edinburgh, Dubai, ED);
         g.setEdgeWeight(ED, ED.getPrice());
         
        
         
         
-        FlightData KLS = new FlightData(150, "BA349", "1900", "0015", 5, "05:15");
+        FlightData KLS = new FlightData(150, "BA349", "19:00", "00:15", 5, "05:15");
         g.addEdge(KualaLumpur, Sydney, KLS);
         g.setEdgeWeight(KLS, KLS.getPrice());
         
         
-        FlightData SKL = new FlightData(150, "BA349", "1900", "0015", 5, "05:15");
+        FlightData SKL = new FlightData(150, "BA349", "19:00", "00:15", 5, "05:15");
         g.addEdge(Sydney, KualaLumpur, SKL);
         g.setEdgeWeight(SKL, SKL.getPrice());
        
         
         
         
-        FlightData EF = new FlightData(90, "BA348", "0700", "1045", 3, "03:45");
+        FlightData EF = new FlightData(90, "BA348", "07:00", "10:45", 3, "03:45");
         g.addEdge(Edinburgh, Frankfurt, EF);
         g.setEdgeWeight(EF, EF.getPrice());
         
        
-        FlightData FE = new FlightData(90, "BA348", "0700", "1045", 3, "03:45");
+        FlightData FE = new FlightData(90, "BA348", "07:00", "10:45", 3, "03:45");
         g.addEdge(Frankfurt, Edinburgh, FE);
         g.setEdgeWeight(FE, FE.getPrice());
         
         
         
-        FlightData SA = new FlightData(120, "BA347", "1600", "2000", 4, "04:00");
+        FlightData SA = new FlightData(120, "BA347", "16:00", "20:00", 4, "04:00");
         g.addEdge(Sydney, Auckland, SA);
         g.setEdgeWeight(SA, SA.getPrice());
         
         
-        FlightData AS = new FlightData(120, "BA347", "1600", "2000", 4, "04:00");
+        FlightData AS = new FlightData(120, "BA347", "16:00", "20:00", 4, "04:00");
         g.addEdge(Auckland, Sydney, AS);
         g.setEdgeWeight(AS, AS.getPrice());
         
   
         
         
-        FlightData RNY = new FlightData(430, "BA346", "0200", "1024", 8, "08:24");
+        FlightData RNY = new FlightData(430, "BA346", "02:00", "10:24", 8, "08:24");
         g.addEdge(Rio, NY, RNY);
         g.setEdgeWeight(RNY, RNY.getPrice());
         
         
-        FlightData NYR = new FlightData(430, "BA346", "0200", "1024", 8, "08:24");
+        FlightData NYR = new FlightData(430, "BA346", "02:00", "10:24", 8, "08:24");
         g.addEdge(NY, Rio, NYR);
         g.setEdgeWeight(NYR, NYR.getPrice());
         
        
         
         
-        FlightData NYS = new FlightData(320, "BA345", "1200", "2005", 8, "08:05");
+        FlightData NYS = new FlightData(320, "BA345", "12:00", "20:05", 8, "08:05");
         g.addEdge(NY, Santiago, NYS);
         g.setEdgeWeight(NYS, NYS.getPrice());
         
         
-        FlightData SNY = new FlightData(320, "BA345", "1200", "2005", 8, "08:05");
+        FlightData SNY = new FlightData(320, "BA345", "12:00", "20:05", 8, "08:05");
         g.addEdge(Santiago, NY, SNY);
         g.setEdgeWeight(SNY, SNY.getPrice());
         
@@ -215,6 +316,8 @@ public class PartC {
 		
 		
 	}
+	
+	
 	
 	
 }
