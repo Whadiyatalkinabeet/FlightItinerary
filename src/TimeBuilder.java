@@ -1,9 +1,9 @@
 
-import java.sql.Time;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -39,11 +39,11 @@ public class TimeBuilder {
 		
 		
 		
-		if (check1.length() != 2) {
+		if (check1.length() < 2) {
 			check1 = "0" + check1;
 		}
 		
-		if (check2.length() != 2) {
+		if (check2.length() < 2) {
 			check2 = "0" + check2;
 		}	
 		
@@ -91,11 +91,11 @@ public class TimeBuilder {
 		
 		
 		
-		if (check1.length() != 2) {
+		if (check1.length() < 2) {
 			check1 = "0" + check1;
 		}
 		
-		if (check2.length() != 2) {
+		if (check2.length() < 2) {
 			check2 = "0" + check2;
 		}	
 		
@@ -109,7 +109,7 @@ public class TimeBuilder {
 	
 	public ArrayList<String> getData(String time) {
 		
-		StringBuilder sb = new StringBuilder(time);
+		
 		ArrayList<String> splitter = new ArrayList<>();
 		
 		for (String splitTime : time.split(":")){

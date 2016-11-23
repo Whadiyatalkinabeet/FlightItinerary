@@ -8,9 +8,12 @@
  */
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.*;
-
 import java.text.ParseException;
 import java.util.*;
+
+/* ******************************************************
+* Part C-F:                          *
+****************************************************** */
 /**
  * This Class Implements <strong>Parts A-E</strong>
  *This Class Implements the following parts of <strong>Part F:</strong><br>
@@ -55,70 +58,127 @@ public class PartC {
 	 * @param args
 	 * @throws ParseException
 	 */
-	public static void main(String[] args) throws NoPathException, ParseException{
+	public static void main(String[] args) throws ParseException{
 		  
 		SimpleDirectedWeightedGraph<String, FlightData> Graph = FlightPaths();
 		
-		TimeBuilder time = new TimeBuilder();
 		
+		
+		TimeBuilder time = new TimeBuilder();
 		Scanner in = new Scanner(System.in);
+		
 		 
 		String startVertex, endVertex;
         
 		Iterator<String> airports = Graph.vertexSet().iterator();
+		SpellCheck checker = new SpellCheck();
+		LinkedList<String> list = new LinkedList<>();
 	        
 		while (airports.hasNext()){
-			System.out.println(airports.next());
+			String r = airports.next();
+			System.out.println(r);
+			list.add(r);
 		}
         
 		
         Boolean flag = false;
+        
         while (flag == false){
         	
+        	
         	System.out.println("Please enter the start airport:");
-        	startVertex = in.nextLine();
+        	String r = in.nextLine();
+        	
+        	if (!(list.contains(r))){
+		    	if (checker.reversal(list, r) != ""){
+		    		r = checker.reversal(list, r);
+		    		System.out.println("Corrected to " + r);
+		    	} else if (checker.omission(list, r) != ""){
+		    		r = checker.omission(list, r);
+		    		System.out.println("Corrected to " + r);
+		    	} else if (checker.insertion(list, r) != ""){
+		    		r = checker.insertion(list, r);
+		    		System.out.println("Corrected to " + r);
+		    	} else if (checker.substitution(list, r) != ""){
+		    		r = checker.substitution(list, r);
+		    		System.out.println("Corrected to " + r);
+		    	}
+        	}
+        	
+        	startVertex = r;
         
         	System.out.println("Please enter the end airport");
-        	endVertex = in.nextLine();
+        	String r2 = in.nextLine();
+        	
+        	if (!(list.contains(r2))){
+		    	if (checker.reversal(list, r2) != ""){
+		    		r2 = checker.reversal(list, r2);
+		    		System.out.println("Corrected to " + r2);
+		    	} else if (checker.omission(list, r2) != ""){
+		    		r2 = checker.omission(list, r2);
+		    		System.out.println("Corrected to " + r2);
+		    	} else if (checker.insertion(list, r2) != ""){
+		    		r2 = checker.insertion(list, r2);
+		    		System.out.println("Corrected to " + r2);
+		    	} else if (checker.substitution(list, r2) != ""){
+		    		r2 = checker.substitution(list, r2);
+		    		System.out.println("Corrected to " + r2);
+		    	}
+        	}
+        	
+        	
+        	endVertex = r2;
+        	
+       
+        	if (startVertex.equals(endVertex)){
+        		System.out.println("Start and End destinations must be different!");
+        		break;
+        	}
+        	
         
-        	System.out.println("_____________________________________________");
-        	System.out.println("______________CHEAPEST JOURNEY_______________");
+        
         
         	try {
         		DijkstraShortestPath<String, FlightData> cheapestPath = new DijkstraShortestPath<String, FlightData>
         		(Graph, startVertex, endVertex);
+        		System.out.println("_____________________________________________");
+            	System.out.println("______________CHEAPEST JOURNEY_______________");
         		GenerateItinerary(cheapestPath, time);
+        		System.out.println("_____________________________________________");
+                
         		flag = true;
-        	} catch (IllegalArgumentException e) {
+        	} catch (IllegalArgumentException | NoSuchElementException e) {
         		System.out.println("No path between " + startVertex + " and " + endVertex + ", yet.");
+        	} 
+        
+        
+        	
+        
+        	//Only remove the edge weights if the route exists, ie if the first itinerary
+        	//was successfuly generated.
+        	if (flag == true){
+        		RemoveEdgeWeights(Graph);
         	}
         
-        
-        	System.out.println("_____________________________________________");
-        
-        
-        
-        
-        	if (flag == true){
-			RemoveEdgeWeights(Graph);	
-		}
-        
-        	System.out.println("_____________________________________________");
-        	System.out.println("______________SHORTEST JOURNEY_______________");
+      
         
         	try {
+        		
         		DijkstraShortestPath<String, FlightData> shortestPath = new DijkstraShortestPath<String, FlightData>
         		(Graph, startVertex, endVertex);
+        	  	System.out.println("_____________________________________________");
+            	System.out.println("______________SHORTEST JOURNEY_______________");
         		GenerateItinerary(shortestPath, time);
+
+            	System.out.println("_____________________________________________");
         		flag = true;
-        	} catch (IllegalArgumentException e){
-        		System.out.println("No path between " + startVertex + " and " + endVertex + ", yet.");
-        	}
+        	} catch (IllegalArgumentException | NoSuchElementException e){}
+        		
+        	
        
-        	System.out.println("_____________________________________________");
-        
+        	
         }
-    
+        in.close();
         
 	}
         
@@ -150,11 +210,11 @@ public class PartC {
         	
         }
         
-        FlightData Arrive, Depart;
+        FlightData Arrive;
         String changeover = "00:00";
         
        
-       Depart = Departures.next();
+       
         
         while(Departures.hasNext()){
         	Arrive = Arrivals.next();

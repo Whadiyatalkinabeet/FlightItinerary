@@ -1,14 +1,14 @@
 
-import java.net.*;
+
 import java.util.*;
 
-import org.jgrapht.*;
 import org.jgrapht.alg.DijkstraShortestPath;
-import org.jgrapht.generate.*;
 import org.jgrapht.graph.*;
-import org.jgrapht.traverse.*;
 
 
+/* ******************************************************
+* Part A-B: Least  Cost  Connections                           *
+****************************************************** */
 public class test {
 	
 	
@@ -18,8 +18,17 @@ public class test {
         SimpleDirectedWeightedGraph<String, DefaultWeightedEdge> hrefGraph = createHrefGraph();
 
         // note directed edges are printed as: (<v1>,<v2>)
-        System.out.println(hrefGraph.toString());
-		
+        
+        System.out.println(hrefGraph.vertexSet());
+        System.out.println();
+        
+        Iterator<DefaultWeightedEdge> iterator = hrefGraph.edgeSet().iterator();
+        
+        while (iterator.hasNext()){
+        	DefaultWeightedEdge next = iterator.next();
+			System.out.println(next);
+			System.out.println();
+        }
         
         Scanner in = new Scanner(System.in);
         String startVertex, endVertex;
@@ -49,14 +58,14 @@ public class test {
         
         List<DefaultWeightedEdge> l = shortestPath.getPathEdgeList();
         
-        Iterator<DefaultWeightedEdge> iterator = l.iterator();
+        Iterator<DefaultWeightedEdge> shortestPathIterator = l.iterator();
         
         System.out.println("Shortest (i.e cheapest) path:");
         int i = 0;
         
-        while (iterator.hasNext()){
+        while (shortestPathIterator.hasNext()){
         	i += 1;
-        	System.out.println(i + ". " + iterator.next());
+        	System.out.println(i + ". " + shortestPathIterator.next());
         }
         
         System.out.print("Cost of shortest (i.e cheapest) path = £");
@@ -71,6 +80,8 @@ public class test {
        
         
         }
+        
+        in.close();
 		
 	}
 	
@@ -112,8 +123,7 @@ public class test {
 	            DefaultWeightedEdge HD = g.addEdge(Heathrow, Dubai);
 	            DefaultWeightedEdge DH = g.addEdge(Dubai, Heathrow);
 	            
-	            DefaultWeightedEdge Leave = g.addEdge(Heathrow, Dubai);
-	            DefaultWeightedEdge Arrive = g.addEdge(Heathrow, Dubai);
+	           
 	            
 	            DefaultWeightedEdge HS = g.addEdge(Heathrow, Sydney);
 	            DefaultWeightedEdge SH = g.addEdge(Sydney, Heathrow);

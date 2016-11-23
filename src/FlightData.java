@@ -13,6 +13,10 @@
  * @author ns53
  *
  */
+
+/* ******************************************************
+* Part C: Additional Flight Information                           *
+****************************************************** */
 public class FlightData extends org.jgrapht.graph.DefaultWeightedEdge {
 	
 	
