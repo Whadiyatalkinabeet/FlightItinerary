@@ -99,8 +99,9 @@ public class PartC {
         
         
         
-        
-        	RemoveEdgeWeights(Graph);
+        	if (flag == true){
+			RemoveEdgeWeights(Graph);	
+		}
         
         	System.out.println("_____________________________________________");
         	System.out.println("______________SHORTEST JOURNEY_______________");
