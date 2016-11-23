@@ -1,8 +1,8 @@
 
 import java.net.*;
 import java.util.*;
-import org.jgrapht.*;
 
+import org.jgrapht.*;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.generate.*;
 import org.jgrapht.graph.*;
@@ -32,27 +32,45 @@ public class test {
         	System.out.println(airports.next());
         }
         
+        Boolean flag = false;
+        
+        while (flag == false){
+        
         System.out.println("Please enter the start airport:");
         startVertex = in.nextLine();
         
         System.out.println("Please enter the end airport");
         endVertex = in.nextLine();
         
+        try {
+        	
         DijkstraShortestPath<String, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<String, DefaultWeightedEdge>
         (hrefGraph, startVertex, endVertex);
         
         List<DefaultWeightedEdge> l = shortestPath.getPathEdgeList();
+        
         Iterator<DefaultWeightedEdge> iterator = l.iterator();
         
         System.out.println("Shortest (i.e cheapest) path:");
         int i = 0;
+        
         while (iterator.hasNext()){
         	i += 1;
         	System.out.println(i + ". " + iterator.next());
         }
         
-        System.out.print("Cost of shortest (i.e cheapest) path = £");
+        System.out.print("Cost of shortest (i.e cheapest) path = Â£");
         System.out.print(shortestPath.getPathLength());
+        
+        flag = true;
+        } catch (IllegalArgumentException e){
+        	System.out.println("No path between " + startVertex + " and " + endVertex + ", yet.");
+        }
+        
+        
+       
+        
+        }
 		
 	}
 	

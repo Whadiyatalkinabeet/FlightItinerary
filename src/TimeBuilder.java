@@ -57,7 +57,7 @@ public class TimeBuilder {
 		} 
 		
 		
-			String duration2 = (Add2(duration, "24:00"));
+			String duration2 = (getDuration(duration, "24:00"));
 		
 			return duration2 ;
 		}
@@ -79,46 +79,6 @@ public class TimeBuilder {
 		Long duration = Math.abs(date2.getTime() + date1.getTime());
 		
 		Long diffhours = duration / (60 * 60 * 1000);
-		Long diffminutes = duration / (60 * 1000) % 60;
-		
-		
-		
-		String add = "";
-		
-		String check1 = diffhours.toString();
-		String check2 = diffminutes.toString();
-		
-		
-		
-		
-		if (check1.length() != 2) {
-			check1 = "0" + check1;
-		}
-		
-		if (check2.length() != 2) {
-			check2 = "0" + check2;
-		}	
-		
-		
-		
-		add = check1 + ":" + check2;
-		
-		return add ;
-		
-	}
-	
-	public String Add2 (String time1, String time2) throws ParseException{
-
-		SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-		format.setTimeZone(TimeZone.getTimeZone("UTC"));
-		
-		Date date1 = format.parse(time1); 
-		Date date2 = format.parse(time2);
-		
-	
-		Long duration = Math.abs(date2.getTime() - date1.getTime());
-		
-		Long diffhours = duration / (60 * 60 * 1000) % 24;
 		Long diffminutes = duration / (60 * 1000) % 60;
 		
 		
